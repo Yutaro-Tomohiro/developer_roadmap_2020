@@ -40,18 +40,10 @@ CSSをHTMLと組み合わせて使用することで、要素の色や、位置�
 ## JavaScriptの基礎知識
 JavaScriptとは動的にコンテンツを更新したり、マルチメディアを管理したり、その他多くのことができるスクリプト言語のこと。
 
-え？何言ってるか分からない？
-じゃあ、下のボタンをクリックしてみたらJavaScriptがどんなものかなんとなくわかると思うよ。
-<!DOCTYPE html>
-<html>
-<body>
+何言ってるか分かりにくいと思うんで下のgifをみてみて下さい。
+JavaScriptがどんなものかなんとなく分かると思います。
 
-<h3 id="example">ボタンをクリックすると文章が変わるよ</h3>
-
-<button type="button" onclick='document.getElementById("example").innerHTML = "これがJavaScriptの働きです！"'>ボタンをクリックしてね</button>
-
-</body>
-</html>
+![HTTPレスポンス_パフォーマンス](../Images/js_example.gif)
 
 ## 参考文献
 なんでものびるWEB - ホームページの基本、HTMLとは何か？やさしく学ぶ基礎知識（最終閲覧日：2020年7月27日）
