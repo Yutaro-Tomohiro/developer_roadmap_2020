@@ -176,7 +176,7 @@ Responseタブを選択すると、実際にHTMLが取得できていること�
 
 Performanceタブの一番上グラフはWebサイトにアクセスしてから表示完了となるまでを時系列で表す。
 
-![HTTPレスポンス_パフォーマンス](../Images/http_performance.png) 
+![HTTPレスポンス_パフォーマンス](../Images/http_performance.png)
 
 グラフは範囲指定可能で、指定した範囲のパフォーマンスを確認することもできる。
 
