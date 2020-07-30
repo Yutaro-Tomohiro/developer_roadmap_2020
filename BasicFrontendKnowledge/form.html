@@ -6,8 +6,11 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<p>□に入る数字は？</p>
-<form id="form_id" action="">
+<header class="headline">
+    <h1>Arithmetic Quiz</h1>
+</header>
+<section>
+    <p class="question-statement">What number fits in the square?</p>
     <div class="flex-box">
         <p class="box-num">99</p>
         <p class="box-num">45</p>
@@ -21,11 +24,16 @@
         <p class="box-num">29</p>
         <p class="box-num" id="output">□</p>
     </div>
-
-    <p><input id="text_box_id" type="number"></p>
-    <p><input type="button" value="submit" onclick="onButtonClick();"></p>
-</form>
-<div id="div0"></div>
+</section>
+<section class="answer">
+    <form id="form_id" action="">
+        <input class="answer-box" id="text_box_id" type="number">
+        <input class="answer-button" type="button" value="send" onclick="onButtonClick();">
+    </form>
+</section>
+<section class="judge">
+    <div id="judgment"></div>
+</section>
 <script type="text/javascript" src="script.js"></script>
 </body>
 </html>
