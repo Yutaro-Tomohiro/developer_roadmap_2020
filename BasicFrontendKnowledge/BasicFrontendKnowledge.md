@@ -31,11 +31,11 @@ CSSをHTMLと組み合わせて使用することで、要素の色や、位置�
 
 例えば、以下のような文字が
 
-![HTTPレスポンス_パフォーマンス](../Images/css_onlyHTML.png)
+![CSSの例_適用前](../Images/css_onlyHTML.png)
 
 こんな感じに文字を緑色に装飾できる。
 
-![HTTPレスポンス_パフォーマンス](../Images/css_HTMLandCSS.png)
+![CSSの例_適用後](../Images/css_HTMLandCSS.png)
 
 ## JavaScriptの基礎知識
 JavaScriptとは動的にコンテンツを更新したり、マルチメディアを管理したり、その他多くのことができるスクリプト言語のこと。
@@ -43,7 +43,7 @@ JavaScriptとは動的にコンテンツを更新したり、マルチメディ�
 何言ってるか分かりにくいと思うんで下のgifを見てみて下さい。
 JavaScriptがどんなものかなんとなく分かると思います。
 
-![HTTPレスポンス_パフォーマンス](../Images/js_example.gif)
+![JSの例](../Images/js_example.gif)
 
 ## 参考文献
 なんでものびるWEB - ホームページの基本、HTMLとは何か？やさしく学ぶ基礎知識（最終閲覧日：2020年7月27日）
