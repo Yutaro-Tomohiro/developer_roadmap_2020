@@ -51,6 +51,14 @@ awk '評価式 { アクション }'
 アクション処理内部ではif文やfor文などの制御文も使用可能。
 また、指定したパターンが真の時のみアクションが実行される。
 ### awkを使ってみた
+正規表現のパターンを使ってみる。
+![awk_regex](../Images/awk_regex.png)
+
+BEGINとENDのパターンを使ってみる。
+![awk_regex](../Images/awk_begin_end.png)
+
+評価式のパターンを使ってみる。
+![awk_regex](../Images/awk_match.png)
 
 <!-- ## sed
 ### とは？
