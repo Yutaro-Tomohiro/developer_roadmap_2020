@@ -130,9 +130,11 @@ APIを叩くためによく使われる。
 でもAPIを叩くためだけの存在じゃない。
 
 ### curlの書式
+```
 curl -O [オプション] URL
 
 curl [オプション] URL > 保存ファイル名
+```
 
 ### curlを使ってみた
 URLを指定して、取得→ファイルに出力してみる。
@@ -141,7 +143,7 @@ URLを指定して、取得→ファイルに出力してみる。
 
 ![curl_DLC](../Images/curl_DLC.png)
 
-取得したファイル👉[manpage.html](OSandGeneralKnowledge/manpage.html)
+取得したファイル👉[manpage.html](/manpage.html)
 
 次にHTTPヘッダを出力させてみる。「-I」オプションで HTTP ヘッダのみを取得できる。
 
@@ -241,22 +243,78 @@ www.iana.org/domains/example                                              100%[=
 経過時間: 1.3s
 ダウンロード完了: 3 ファイル、11K バイトを 0s で取得 (58.3 MB/s)
 ```
-実行結果👉[www.example.com/index.html](OSandGeneralKnowledge/www.example.com/index.html)
+実行結果👉[www.example.com/index.html](www.example.com/index.html)
 
-<!-- ## tail
-### とは？
-### の書式
-### を使ってみた -->
+## tail
+### tailとは？
+テキストファイルまたはパイプでのテキスト入力の最後のn行を抜き出すコマンド。
+行単位ではなくバイト単位での指定も可能。
+デフォルトでは最後の10行を抜き出す。
 
-<!-- ## head
-### とは？
-### の書式
-### を使ってみた -->
+### tailの書式
+tail [オプション] ファイル名
 
-<!-- ## less
-### とは？
-### の書式
-### を使ってみた -->
+コマンド | tail [オプション]
+
+### tailを使ってみた
+lsofにパイプを通して、最後の１０行を出力してみる。
+
+![tail](../Images/tail.png)
+
+## head
+### headとは？
+tailとは逆で、先頭を抜き出すコマンド。
+デフォルトだと10行出力する。
+
+### headの書式
+```
+head [オプション] ファイル名
+
+コマンド | head [オプション]
+```
+
+### headを使ってみた
+今回はHTTPヘッダの先頭10行を出力してみる。
+
+```
+curl -I https://curl.haxx.se/docs/manpage.html | head
+👇                                                                                   (git)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0  208k    0     0    0     0      0      0 --:--:--  0:00:02 --:--:--     0
+HTTP/2 200 
+server: Apache
+x-frame-options: SAMEORIGIN
+last-modified: Sun, 23 Aug 2020 00:45:55 GMT
+etag: "34138-5ad80caeb840c"
+cache-control: max-age=60
+expires: Sun, 23 Aug 2020 16:22:11 GMT
+x-content-type-options: nosniff
+content-security-policy: default-src 'self' www.fastly-insights.com; style-src 'unsafe-inline' 'self'
+strict-transport-security: max-age=31536000; includeSubDomains;
+```
+
+## less
+### lessとは？
+「less」は、テキストファイルを1画面ずつ表示するコマンド。
+
+中身みるならvimでもいいじゃん、って思うかもしれないが、なんかの間違いでファイルの中身を変更してしまう可能性があるので、閲覧するだけなら使わないのがベター。
+
+### lessの書式
+```
+less [オプション] ファイル名
+
+コマンド | less [オプション]
+```
+
+1行ずつ進めたい時：enter
+
+上下スクロール：矢印キー
+
+終了：［Q］または［q］キー
+
+### lessを使ってみた
+
 
 <!-- ## find
 ### とは？
@@ -294,3 +352,6 @@ https://qiita.com/yasuhiroki/items/a569d3371a66e365316f#url%E3%82%A8%E3%83%B3%E3
 
 ITmedia Inc. - 【 wget 】コマンド――URLを指定してファイルをダウンロードする（最終閲覧日：2020年8月24日）
 https://www.atmarkit.co.jp/ait/articles/1606/20/news024.html
+
+ITmedia Inc. - 【 head 】コマンド／【 tail 】コマンド――長いメッセージやテキストファイルの先頭だけ／末尾だけを表示する（最終閲覧日：2020年8月24日）
+https://www.atmarkit.co.jp/ait/articles/1603/07/news023.html
