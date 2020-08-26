@@ -252,9 +252,11 @@ www.iana.org/domains/example                                              100%[=
 デフォルトでは最後の10行を抜き出す。
 
 ### tailの書式
+```
 tail [オプション] ファイル名
 
 コマンド | tail [オプション]
+```
 
 ### tailを使ってみた
 lsofにパイプを通して、最後の１０行を出力してみる。
@@ -314,12 +316,21 @@ less [オプション] ファイル名
 終了：［Q］または［q］キー
 
 ### lessを使ってみた
+lessを使って、フェンリル株式会社のHPのコードを覗いてみる。ついでに何行書かれているかみてみることにした。
 
 
-<!-- ## find
-### とは？
-### の書式
-### を使ってみた -->
+コマンド👉`curl https://www.fenrir-inc.com/jp/ | less -N `
+
+結果👇
+![less](../Images/less.gif)
+
+478行コードがあった。
+
+
+## find
+### findとは？
+### findの書式
+### findを使ってみた
 
 <!-- ## ssh
 ### とは？
@@ -355,3 +366,6 @@ https://www.atmarkit.co.jp/ait/articles/1606/20/news024.html
 
 ITmedia Inc. - 【 head 】コマンド／【 tail 】コマンド――長いメッセージやテキストファイルの先頭だけ／末尾だけを表示する（最終閲覧日：2020年8月24日）
 https://www.atmarkit.co.jp/ait/articles/1603/07/news023.html
+
+Qiita - エンジニアなら知っておきたい lessコマンドtips 11選（最終閲覧日：2020年8月25日）
+https://qiita.com/ine1127/items/64b5b6cf52471c3fe59c
