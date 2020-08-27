@@ -329,18 +329,60 @@ lessを使って、フェンリル株式会社のHPのコードを覗いてみ�
 
 ## find
 ### findとは？
+ファイル・ディレクトリを検索するコマンド。
+アクションを指定することで、見つかったファイル・ディレクトリに変更を加えることもできる。
+
 ### findの書式
+```
+find 検索パス 検索条件 [アクション]
+```
+
 ### findを使ってみた
+OSandGeneralKnowledgeディレクトリ内にある.mdのつくファイルを検索してみた。
 
-<!-- ## ssh
-### とは？
-### の書式
-### を使ってみた -->
+```
+find OSandGeneralKnowledge -name \*.md
+👇
+OSandGeneralKnowledge/process.md
+OSandGeneralKnowledge/Threads.md
+OSandGeneralKnowledge/Basic Terminal Commands.md
+OSandGeneralKnowledge/OS.md
+OSandGeneralKnowledge/TerminalUsage.md
+```
 
-<!-- ## kill
-### とは？
-### の書式
-### を使ってみた -->
+## ssh
+### sshとは？
+暗号化された通信を使ってリモート接続をするコマンド。
+リモートマシンにログインして、リモートマシン上でコマンドを実行したい場合に使用する。
+### sshの書式
+```
+ssh [オプション] 接続先
+
+ssh [オプション] [ログイン名@]接続先 [接続先で実行したいコマンド]
+```
+
+<!-- ### sshの認証方法
+sshの主要なユーザー認証方式では、「パスワード認証方式」と「公開鍵認証方式」の2通りがある。 -->
+
+## kill
+### killとは？
+実行中のプロセスを強制的に終了させるコマンド。
+
+### killの書式
+```
+kill [オプション] プロセスID
+```
+
+### killを使ってみた
+
+```
+ps aux | grep Alfred
+xxxxxxx   92040   0.0  0.0  4399356    780 s000  R+    9:19AM   0:00.00 grep Alfred
+xxxxxxx   92021   0.0  0.1  7094468  31324   ??  S     9:19AM   0:00.38 /Applications/Alfred 4.app/Contents/MacOS/Alfred
+kill 92021
+ps aux | grep Alfred
+xxxxxxx   92062   0.0  0.0  4399356    744 s000  R+    9:20AM   0:00.00 grep Alfred
+```
 
 ## 参考文献
 エンジニアの入り口 - grepコマンドの詳細まとめました【Linuxコマンド集】（最終閲覧日：2020年8月19日）
@@ -369,3 +411,9 @@ https://www.atmarkit.co.jp/ait/articles/1603/07/news023.html
 
 Qiita - エンジニアなら知っておきたい lessコマンドtips 11選（最終閲覧日：2020年8月25日）
 https://qiita.com/ine1127/items/64b5b6cf52471c3fe59c
+
+エンジニアの入り口 - ファイルなどを検索する！findコマンドの詳細まとめ【Linuxコマンド集】（最終閲覧日：2020年8月27日）
+https://eng-entrance.com/linux-command-find#-name
+
+ITmedia Inc. - 【 kill 】コマンド／【 killall 】コマンド――実行中のプロセスを終了させる (2/2)（最終閲覧日：2020年8月27日）
+https://www.atmarkit.co.jp/ait/articles/1604/05/news022_2.html
