@@ -27,6 +27,11 @@ LINEではデータファイルなどをP2Pで共有しているため、サー�
 
 そのためデータファイルを蓄えるための大規模サーバーを設置せずに済み、無料でLINEを使うことができる。
 
+## 補足
+OSI参照モデル、TCP/IP、クライアント・サーバーシステムについて👇
+
+[HowDoesTheInternetWork.md](Internet/HowDoesTheInternetWork.md)
+
 ## 参考文献
 Udemyメディア｜ITパスポート・基本情報 - P2P(ピアツーピア)とは？仕組みから活用例まで詳しく解説（最終閲覧日：2020年9月7日）
 https://udemy.benesse.co.jp/development/blockchain/p2p.html
