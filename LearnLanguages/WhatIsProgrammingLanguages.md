@@ -57,7 +57,7 @@ rubyには公式のコーディング規約が存在しない。
 
 [Rubyスタイルガイド](https://github.com/fortissimo1997/ruby-style-guide/blob/japanese/README.ja.md):Rubyのソースコード解析ツールであるRuboCopが準拠しているコーディング規約
 
-Standard gem:
+[Standard gem](https://github.com/testdouble/standard): RuboCopを元とした静的解析ツール。RuboCopの特徴はカスタマイズ性優れている点だが、その分手間がかかる。Standard gemそのまま使える手軽さが売り。作者はJustin Sealsというオハイオ洲在住の関西人の方で、RubyKaigi 2016のキーノートスピーカーにも出ている有名な人らしい。
 
 ## パッケージマネージャについて
 ### パッケージマネージャとは
@@ -66,6 +66,8 @@ Standard gem:
 パッケージ間の競合を回避したりする仕組みを提供しているツールをパッケージマネージャという。
 
 Mac OS Xのパッケージマネージャではhomebrewが有名。
+
+railsには主にrbenv, RubyGems, Bundlerというパッケージマネージャが使われる。
 
 ### homebrewの使い方
 Homebrew は「ユーザが自らパッケージをビルドして使用する」ことのメタファーで「ビールを自家醸造して保存する・飲む」ことを意味している。そのため、独特なキーワードを用いるので下記の表にまとめる。
@@ -99,19 +101,125 @@ Homebrew 用のサブコマンドを叩いたり、エラー処理している�
 |brew doctor|Homebrewの問題をチェック|
 |brew commands|Homebrewのコマンドの一覧を表示|
 |brew help コマンド|Homebrewのコマンドの使い方を表示|
-|brew home|Homebrewや、そのパッケージのページを表示|
+|brew home|Homebrewやそのパッケージのページを表示|
 |man brew|Homebrewについてのマニュアルを表示|
 
-### rails周りのパッケージマネージャーの使い方
-railsには主にrbenv, RubyGems, Bundlerというパッケージマネージャがあってそれぞれの特徴を以下の表にまとめる。
+### ruby周りのパッケージマネージャーの使い方
+rubyには主にrbenv, RubyGems, Bundlerというパッケージマネージャがあってそれぞれの特徴を以下の表にまとめる。
 
 |パッケージマネージャ|特徴|
 |--|--|
 |rbenv|複数のRubyバージョンを管理するツール。バージョンを指定してrubyをインストールできる。インストール後は各バージョンごとに利用するgem置き場が提供される。Railsアプリケーションごとに使用するRubyバージョンを指定できるようになる。|
 |RubyGems|Rubyライブラリのgemのパッケージ管理ツール。現在利用しているバージョンのrubyに対してgemをインストールできる。rubyをインストールすると付属してくるツール。目的のgemをインストールする時に別のgemが必要になる(=依存関係がある)場合、それもインストールして目的のGemを使える状態にすることができる。|
-|Bundler|RubyGemsをより高機能に使うgem。RailsプロジェクトごとにGemfileというファイルで使用するgemを明示的に管理できる(PC全体を汚さず、Railsプロジェクトで完結する)。Bundler自体がRubyGemsによってインストールされるgemであるが、RubyGemsを操って各Railsアプリケーションに必要なgemをGemfile, Gemfile.lockというgem一覧ファイルに基づいてインストールできる。|
+|Bundler|RubyGemsをより高機能に使うgem。Railsと一緒に用いる場合、RailsプロジェクトごとにGemfileというファイルで使用するgemを明示的に管理できる(PC全体を汚さず、Railsプロジェクトで完結する)。Bundler自体がRubyGemsによってインストールされるgemであるが、RubyGemsを操って各Railsアプリケーションに必要なgemをGemfile, Gemfile.lockというgem一覧ファイルに基づいてインストールできる。|
 
 まずは、rbenvの使い方について書いていく。
+切り替え方法はlocalとglobalの２種類がある。
+
+localでの切り替えについて
+
+- localでの切り替えはプロジェクト毎に使用するRubyのバージョンを切り替える時に使用する
+- rbenv local X.X.X(X.X.Xは任意のバージョン)で実行され、カレントディレクトリにバージョン情報が書かれた.ruby-versionファイルを作成する
+- .ruby-versionファイルがある層より下のディレクトリは、.ruby-versionファイルに書かれたバージョンが使われる
+- .ruby-versionファイルは、global切り替えよりも優先順位が高いため、.ruby-versionファイルに書かれたバージョンが優先される
+
+globalでの切り替えについて
+
+- パソコン全体で使用するRubyのバージョンを切り替える時に使用する
+-  rbenv global X.X.X(X.X.Xは任意のバージョン)で実行され、rbenvフォルダ構成にある~/.rbenv/versionのバージョンを切り替えている
+- フォルダに.ruby-versionがファイルがある場合は、そちらに記載されているバージョンが優先される
+
+次にRubyGemsの使い方について書いていく。
+まずはGemパッケージをインストールする方法だが、例えば[Devise](https://rubygems.org/gems/devise)をインストールするには、以下のコマンドを実行すれば良い。
+
+```
+$ gem install devise
+```
+
+特定のバージョンのGemパッケージをインストールする時👇
+
+```
+$ gem install devise --version X.X.X    # バージョンX.X.Xをインストールする
+```
+Gemパッケージをアンインストールする時には以下のコマンドを実行する。
+
+```
+$ gem uninstall devise
+```
+特定のバージョンのGemパッケージをアンインストールする時👇
+
+```
+$ gem uninstall devise --version X.X.X    # バージョンX.X.Xをアンインストールする
+```
+
+インストールされているGemパッケージ全てを更新するには以下のコマンドを実行する。
+```
+$ gem update
+```
+
+特定のGemパッケージを更新するには以下のコマンド👇
+```
+$ gem update devise
+```
+
+gemパッケージの探し方についてだが、[ RubyGems.org](https://rubygems.org)で実装したいキーワードで検索すると関連するgemを探すことができる。
+
+最後にBundlerの使い方について書いていく。
+まずはインストール方法だが、Bundlerもgemの１つなので、以下のコマンドを実行する。
+
+```
+$ gem install bundler --version X.X.X
+```
+
+bundlerが入っているか確認するには以下のコマンドを実行する。
+
+```
+$bundler -v
+```
+
+bundlerはGemfileとGemfile.lockでgemを管理していて、Gemfileに使いたいgemの一覧を記述していく。
+Gemfileへの書き方は以下の通り。
+
+```
+# バージョン指定した場合
+gem 'gem名', 'バージョン'
+
+# バージョン指定しなかった場合 -> 最新のバージョンがインストールされる
+gem 'gem名'
+```
+
+Gemfileに記述されたgemをインストールするコマンドとして、
+
+- bundle install
+- bundle update
+
+の２つがあるが、この２つのコマンドの違いを説明する。
+
+bundle installはGemfile.lockにないgemをGemfileから探し、見つけたgemをinstallするコマンドである。
+このコマンドを実行すると以下の３つが実行される。
+
+- Gemfile.lockでどのgemがinstallされているか確認する
+- Gemfile.lockを確認した後にGemfileに記述されているgemを確認する
+- Gemfile.lockにないgemをGemfileから見つけた場合、そのgemをインストールする。
+
+これに対して、bundle updateはGemfile.lockに書かれている内容は無視し、Gemfileに書かれているgemを全てインストールするコマンドになる。
+
+bundle updateはGemfileに書かれているgemだけに対して行われるので、今まで動いてたアプリケーションが急に動かなくなる可能性がある。
+
+また、bundle updateをしてGemfile.lockを更新してそれをgitであげると、開発メンバーがそれをpullして動かなくなる危険性もある。
+なので、基本的にはbundle installだけを使う様にして、bundle updateコマンドは慎重に使わなければならない。
+
+その他、bundleコマンドを以下の表にまとめる。
+
+|コマンド|意味|
+|--|--|
+|bundle init|Gemfileを作るコマンド。railsならデフォルトで出来流ので、あまり使う機会はなさそう。|
+|bundle list|既にインストールしているgemパッケージの一覧を表示するコマンド|
+|bundle config|全てのBundler設定を表示するコマンド。optionを渡してBundlerの設定もできる。|
+|bundle clean|ローカルのbundle install先の使われていないGemを削除するコマンド|
+|bundle open|オプションで指定したgemファイルを開くコマンド。gemがどの様な挙動をしているか調べたい時にgemファイルの中身を見れるので便利。|
+|bundle show|gemが保存されているパスを確認できるコマンド|
+|bundle viz|gemの相関図を画像で出してくれるコマンド|
 
 ##  補足
 機械語：コンピュータが翻訳処理なしに直接理解して処理できる言語
@@ -122,17 +230,18 @@ railsには主にrbenv, RubyGems, Bundlerというパッケージマネージャ
 
 動的型付け：変数や返り値などの値についての型の整合性チェックをプログラムの実行時に行う型システムのこと
 
-強い型付け：
+<!-- 強い型付け：
 
-弱い型付け：
+弱い型付け： -->
 
-メモリ安全性：
+メモリ安全性：RAMアクセス時に発生するバグやセキュリティホールなどから保護されている状態のこと。例えば、Javaは実行時エラー検出で配列の境界とポインタの参照外しを確認するので、メモリ安全であると言われている。対照的に、CとC++は境界チェックを行わないメモリアドレスを直接参照するポインタを使用した任意のポインタ演算が可能なので、メモリ安全ではない。
+
+パッケージ：実行プログラム、設定ファイル、ドキュメントなどを1つのファイルにまとめたもの
 
 gemfile：bundle install前に必要なgemをまとめて記述するためのファイル
 
 gemfile.lock：実際にインストールしたgemの具体的なバージョンを記述する。また、gemfileを参照してgemをインストールする際に依存関係にあるgemについても記述される。
 
-パッケージ：実行プログラム、設定ファイル、ドキュメントなどを1つのファイルにまとめたもの
 ## 参考文献
 weblios辞書｜プログラミング言語（最終閲覧日：2020年9月14日）
 https://www.weblio.jp/content/%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%9F%E3%83%B3%E3%82%B0%E8%A8%80%E8%AA%9E
@@ -149,6 +258,9 @@ https://note.com/tasting/n/na6152e3aac51
 Rubyコーディング規約（最終閲覧日：2020年9月14日）
 https://shugo.net/ruby-codeconv/codeconv.html
 
+Qiita | Rubyコーディングスタイルの現状とStandard gemのご紹介（最終閲覧日：2020年9月28日）
+https://qiita.com/takahashim/items/e51927d473f18c2bc73a#standard-gem%E3%81%A8%E3%81%AF
+
 Qrunch.net | パッケージ管理システムについて基本的な概念をまとめてみる（最終閲覧日：2020年9月20日）
 https://qrunch.net/@nimzo6689/entries/9M2bGWID83kuQ7nV
 
@@ -160,9 +272,14 @@ https://qiita.com/WisteriaWave/items/42d59b8e7ea8ef083877#2-%E9%96%A2%E4%BF%82%E
 Qiita | Bundler, Gemfile, Gemfile.lock について（最終閲覧日：2020年9月20日）
 https://qiita.com/viola/items/169833d4c8baf79e1b52
 
-Qiita | rbenvの使い方と仕組みについて（最終閲覧日：2020年9月20日）
+Qiita | rbenvの使い方と仕組みについて（最終閲覧日：2020年9月28日）
 https://qiita.com/Kodak_tmo/items/73147ed4f0eec54d6e94
 
-Qiita | （最終閲覧日：2020年9月20日）
+Ruby2.7.0リファレンスマニュアル | rubygemsライブラリ(最終閲覧日：2020年9月28日）
+https://docs.ruby-lang.org/ja/latest/library/rubygems.html
 
-Qiita | （最終閲覧日：2020年9月20日）
+
+Pikawa | Rails】結局bundlerって何？bundlerの仕組みを図解形式で徹底解説(最終閲覧日：2020年9月28日）
+https://pikawaka.com/rails/bundler#bundler%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95
+
+<!-- Qiita | （最終閲覧日：2020年9月20日） -->
