@@ -6,5 +6,10 @@
 
 ## 期間
 2020/07 ~ 2021/03
-## スケジュールとマイルストーン
-## マイルストーンごとの完了の定義
+## 各マイルストーンへのリンク
+
+<!-- [Internet](/Internet/)
+
+[Basic Fronted knowledge]
+[OS and General Knowledge]
+[Learn a Language] -->
