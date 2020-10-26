@@ -536,11 +536,69 @@ nothing to commit, working tree clean
 
 カンバン式のタスク管理を可能にする機能のこと。
 
-リポジトリの TOP ページから Projects を押して、Cerate a project からプロジェクトを作成する。
+リポジトリの TOP ページから Projects を押して、Cerate a project からプロジェクトを作成していく。
+
+Cerate a project をクリックすると、以下のようなページになる。
+
+![project1](../Images/project1.png)
+
+↓ こんな感じのページが表示されれば Project の作成は完了。
+
+![project2](../Images/project2.png)
 
 ## issue
 
+課題や問題を管理できる機能。
+
+今回は issue タブから作成していく。
+
+![issue1](../Images/issue1.png)
+
+![issue2](../Images/issue2.png)
+
+issue を作成して、project のページに移ると、`Add cards`に先ほど立てた issue のカードがあるので、`To do`に移動させておく。
+
+![issue3](../Images/issue3.png)
+
+Issue の内容に取り組んでいく。
+その前に`To do`から`In progress`に card を移動させておく。
+
+![issue4](../Images/issue4.png)
+
+一通り対応が終わって、PullRequest を出す。
+PullRequest を作る際にあることをするだけで、PullRequest がマージされるタイミングで勝手に関連する Issue を削除してくれる機能がある。
+
+やり方は PullRequest の description の所に「close #[issue 番号]」と書くだけ。
+
+![issue5](../Images/issue5.png)
+
+PullRequest をマージして、プロジェクトに戻る。
+
+![issue6](../Images/issue6.png)
+
+今まで、緑色！マークだったのが赤色！マークにチェックがついたものに変わっている。
+これは issue がクローズされた証拠。
+
+issue をこなせたので、 `Done`に card を移動させて終わり。
+
 ## pages
+
+GitHub による静的サイトのホスティングサービス。
+
+特徴は以下の通り ↓
+
+- 静的サイト(HTML や CSS,画像など)を公開できる。JavaScript も動作する。
+- URL は `https://ユーザor組織名.github.io/リポジトリ名` となるが、独自ドメインを割り当てることも可能。
+- 無料。
+- サイトの容量や転送量などには制限がある。
+
+実際に[git_practice リポジトリ](https://github.com/Yutaro-Tomohiro/git_practice)のマスターブランチを GitHub Pages として公開する。
+
+`Settings` → `GitHub Pages` → `Source`に移動し、master branch を選択、その後 `Save`をクリック。
+
+できたサイトが[こちら](https://yutaro-tomohiro.github.io/git_practice/)。
+
+![page](../Images/page.png)
 
 ## 補足
 
@@ -567,3 +625,6 @@ https://qiita.com/TakumaKurosawa/items/79a75026327d8deb9c04#4-commit%E3%81%97%E3
 
 WWW クリエイターズ | よく分かる！git rebase と merge の違いと使い分け(最終閲覧日：2020 年 10 月 26 日）
 https://www-creators.com/archives/1943
+
+Qiita | [git reset (--hard/--soft)]ワーキングツリー、インデックス、HEAD を使いこなす方法(最終閲覧日：2020 年 10 月 26 日）
+https://qiita.com/shuntaro_tamura/items/db1aef9cf9d78db50ffe
