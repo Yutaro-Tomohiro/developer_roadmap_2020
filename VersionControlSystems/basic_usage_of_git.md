@@ -359,6 +359,91 @@ Fast-forward
 
 ## rebase
 
+異なるブランチの変更を統合するためのコマンド。
+この説明だけだと、`merge`と同じだが、統合の方針に違いがある。
+
+<!-- 例えば、`bugFixブランチ`なるものでバグ修正している間に`developブランチ`が先に進んでいたとする。
+このまま、`develop`に`bugFix`をマージすると、コンフリクトしてしまう。
+
+コンフリクトを`develop`で解決する -->
+
+言葉だと難しいので、図で説明すると以下のような感じ。
+
+例えば下図のようなブランチがあったとして、
+
+![rebase1](../Images/rebase1.png)
+
+`mergeコマンド`を使うとこんな感じの履歴になる。
+
+![rebase2](../Images/rebase3.png)
+
+`rebaseコマンド`を使うとこんな感じになる。
+
+![rebase3](../Images/rebase4.png)
+
+`rebase`のイメージは統合したいブランチをちぎって、統合元のブランチの最新コミットから引っ付ける感じ。
+
+じゃあ、この統合の仕方が違うと何かいいことあるん？ってことだけど、`rebase`は**統合元のブランチ(ここでは develop ブランチ)の歴史をきれいに保てる**というメリットがある。
+
+`merge`だと、develop と bugFix の両方とものコミットログが残ってしまう。
+
+`rebase`だと`git merge --no-ff`を使うと、
+
+![rebase4](../Images/rebase5.png)
+
+develop の歴史だけ見ると、直列の開発履歴で、変更コミットが機能ごと（bugFix ブランチ）に独立して見えるため、シンプルに見える。
+
+実際に`rebase`を使ってみる。
+
+`master`と`develop`のそれぞれのブランチに２個ずつコミットを積んでおく。
+
+![rebase5](../Images/rebase6.png)
+
+develop ブランチから`git rebase master`とコマンドを打つと以下のようなメッセージが帰ってくる。
+
+```
+First, rewinding head to replay your work on top of it...
+Applying: add : readme.mdにdevelopブランチから内容追加
+Using index info to reconstruct a base tree...
+M       README.md
+Falling back to patching base and 3-way merge...
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+error: Failed to merge in the changes.
+Patch failed at 0001 add : readme.mdにdevelopブランチから内容追加
+hint: Use 'git am --show-current-patch' to see the failed patch
+Resolve all conflicts manually, mark them as resolved with
+"git add/rm <conflicted_files>", then run "git rebase --continue".
+You can instead skip this commit: run "git rebase --skip".
+To abort and get back to the state before "git rebase", run "git rebase --abort".
+```
+
+長々としたメッセージだが、要は**README.md でコンフリクトが起きているよ。以下の３つのコマンドから解決方法を選んでね**ということで、3 つのコマンドの意味はこんな感じ。
+
+| コマンド                | 意味                                                                                                              |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `git rebase --continue` | rebase を続行する。コンフリクトを解消した後に使う。                                                               |
+| `git rebase --skip`     | rebase をスキップする。主にコンフリクト解消時に、1 つ前のコミットとの違いがなくなってしまった場合などに使用する。 |
+| `git rebase --abort`    | rebase を中断する。ブランチの歴史は git rebase を実行する前に戻る。                                               |
+
+今回は、rebase を続行するかつ、１つ前のコミットと違うので、コンフリクトを解消した後に`git rebase --continue`を実行する。
+
+develop からブランチの状態をみるとこんな感じ。
+
+![rebase6](../Images/rebase7.png)
+
+ちゃんとブランチが１本になっている。
+
+しかし、master ブランチ戻って履歴を確認するとまだ develop の変更が反映されていないので、自身の最新のコミットで止まっている。
+
+![rebase7](../Images/rebase8.png)
+
+`git merge --no-ff develop`を実行すると、
+
+![rebase8](../Images/rebase9.png)
+
+master の最新コミットから直列の開発履歴になっていて、bugFix の変更も独立して見えている。
+
 ## reset
 
 ## projects
