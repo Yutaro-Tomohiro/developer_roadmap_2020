@@ -446,6 +446,92 @@ master の最新コミットから直列の開発履歴になっていて、bugF
 
 ## reset
 
+HEAD の位置を変更するコマンド。
+オプションによってインデックス、ワーキングツリーの内容も変更でき、コミット内容を取り消しするような振る舞いもできる。
+
+`git reset`には大きく３つのオプションがある。
+オプションは修正の及ぶ範囲で違う。
+
+- --hard：「HEAD の位置・インデックス・ワーキングツリー」全て
+- --mixed（or オプション無し）：「HEAD の位置・インデックス」
+- --soft：「HEAD の位置」のみ
+
+usecase ごとに説明する。
+
+① 直前のコミットのみ取り消すとき : `git reset --soft HEAD^`
+
+② 直前のコミットを丸ごと取り消したい : `git reset --hard HEAD^`
+
+③ コミット後の変更を全部消したい : `git reset --hard HEAD`
+
+④ add を取り消したい : `git reset (--mixed) HEAD`
+
+⑤ 間違えて`git reset`したとき : `git reset --hard ORIG_HEAD`
+
+実際に`git reset`を使ってみる。
+
+README.md に変更を加える。
+
+![reset1](../Images/reset1.png)
+
+この内容をコミットして履歴を確認すると、
+
+![reset2](../Images/reset2.png)
+
+「git reset の練習」という新しいコミットメッセージが積まれている。
+
+このコミットを取り下げたいので、`git reset --soft HEAD^`を実行して、履歴を確認すると
+
+![reset3](../Images/reset3.png)
+
+「git reset の練習」のコミットメッセージが消えている。
+`git status`でも確認。
+
+```
+$ git status                                                                                                (git)-[master][~/workspace/git_practice]
+On branch master
+Your branch is ahead of 'origin/master' by 4 commits.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   README.md
+```
+
+ステージングの状態に戻ってる。
+
+ステージング状態も取り下げるために`git reset --mixed HEAD`を実行する。
+
+```
+git status                                                                                                (git)-[master][~/workspace/git_practice]
+On branch master
+Your branch is ahead of 'origin/master' by 4 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   README.md
+```
+
+ちゃんと、ステージングも取り下げれた。
+
+ここまで来たので、ファイルの変更内容もなかったことにしたいので、`git reset --hard HEAD^`を実行する。
+
+```
+git status                                                                                                (git)-[master][~/workspace/git_practice]
+On branch master
+Your branch is ahead of 'origin/master' by 2 commits.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+```
+
+ワーキングツリーも綺麗さっぱりになった。
+ファイルの方を見ても先ほど書き込んだことはなくなっている。
+
+![reset4](../Images/reset4.png)
+
 ## projects
 
 カンバン式のタスク管理を可能にする機能のこと。
@@ -455,6 +541,12 @@ master の最新コミットから直列の開発履歴になっていて、bugF
 ## issue
 
 ## pages
+
+## 補足
+
+ワーキングツリー[working tree]：最新のファイルの状態
+
+インデックス[index]（ステージ[stage]）：コミットするためのファイルの状態
 
 ## 参考文献
 
@@ -472,3 +564,6 @@ https://www-creators.com/archives/1472
 
 Qiita | GitHub 実践ハンズオン(最終閲覧日：2020 年 10 月 16 日）
 https://qiita.com/TakumaKurosawa/items/79a75026327d8deb9c04#4-commit%E3%81%97%E3%81%A6%E3%81%BF%E3%82%88%E3%81%86starstarstar
+
+WWW クリエイターズ | よく分かる！git rebase と merge の違いと使い分け(最終閲覧日：2020 年 10 月 26 日）
+https://www-creators.com/archives/1943
