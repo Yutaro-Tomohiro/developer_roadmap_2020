@@ -244,7 +244,7 @@ TEXT 型は VARCHAR 型で格納できるバイト数を指定しなかったも
 
 ### ENUM 型
 
-文字列型の ENUM 　型の使い方は以下の通り。
+文字列型の ENUM 型の使い方は以下の通り。
 
 ```
 ENUM('value1','value2',...)[CHARACTER SET][COLLATE]
