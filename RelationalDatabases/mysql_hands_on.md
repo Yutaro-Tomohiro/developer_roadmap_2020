@@ -95,6 +95,60 @@ mysql> DESCRIBE students;
 3 rows in set (0.00 sec)
 ```
 
+## テーブルへのデータ登録
+
+テーブルに値を登録するには 2 つの方法がある。
+
+- 値を含んだテキストファイルを作成して、テーブルにロード
+- INSERT 文
+
+今回は INSERT 文を使う。
+INSERT 文の使い方は以下の通り。
+
+```
+INSERT INTO [テーブル名]  VALUES('値1', '値2', ...);
+```
+
+今回は５人生徒を登録する。
+
+- id=1, name='akashi', birth='2004-08-22'
+- id=2, name='iwaki', birth='2005-11-04'
+- id=3, name='ueno', birth='2006-04-16'
+- id=4, name='enoshima', birth='2005-10-18'
+- id=5, name='okita', birth='2006-03-03'
+
+```
+mysql> INSERT INTO students VALUES(1,'akashi','2004-08-22');
+Query OK, 1 row affected (0.01 sec)
+```
+
+この調子で全員登録する。
+ちゃんと登録できているかは次の章で確認する。
+
+せっかくなので、ちょっとした実験もする。
+id は制約で`UNIQUE`かつ`NOT NULL`なので、本当に
+
+- 重複した値
+- null 値
+
+が登録できないのかを試してみる。
+
+```
+mysql> INSERT INTO students VALUES(1,'kawazoe','2006-08-03');
+ERROR 1062 (23000): Duplicate entry '1' for key 'students.id'
+```
+
+`id=1`で登録しようとすると重複しているから無理！っていうエラーをちゃんと吐いた。
+
+```
+mysql> INSERT INTO students VALUES(null,'kawazoe','2006-08-03');
+ERROR 1048 (23000): Column 'id' cannot be null
+```
+
+`id=null`で登録しようとすると、null は入りません！っていうエラーを吐いた。
+
+なので、`UNIQUE`と`NOT NULL`は働いていることが分かった。
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
