@@ -203,7 +203,7 @@ Rows matched: 1  Changed: 1  Warnings: 0
 `WHERE`に特定の条件を入れてあげればいい。
 例えば、WHERE 以下に`id = 1`とか`name = 'hoge'`など。
 
-`=`意外にも` < , >`などの不等号や`AND, OR`などの論理演算子も使える。
+`=`以外にも` < , >`などの不等号や`AND, OR`などの論理演算子も使える。
 
 とりあえず、先ほど更新したレコードを取得してみる。
 生年月日は更新してないので、id と name だけ取得する。
@@ -255,7 +255,60 @@ mysql> select id, birth from students where birth < '2006-01-01' and birth > '20
 
 とすれば良い。
 
+## 行の並び替え
+
+結果を並び替えるためには`ORDER BY句`を使う。
+
+とりあえず birth を昇順で並べる。
+
+```
+mysql> select * from students order by birth;
++----+---------+------------+
+| id | name    | birth      |
++----+---------+------------+
+|  1 | akashi  | 2004-08-22 |
+|  4 | enokida | 2005-10-18 |
+|  2 | iwaki   | 2005-11-04 |
+|  5 | okita   | 2006-03-03 |
+|  3 | ueno    | 2006-04-16 |
++----+---------+------------+
+5 rows in set (0.00 sec)
+```
+
+降順で並べる場合は`DESC`を使う。
+
+```
+mysql> select * from students order by birth DESC;
++----+---------+------------+
+| id | name    | birth      |
++----+---------+------------+
+|  3 | ueno    | 2006-04-16 |
+|  5 | okita   | 2006-03-03 |
+|  2 | iwaki   | 2005-11-04 |
+|  4 | enokida | 2005-10-18 |
+|  1 | akashi  | 2004-08-22 |
++----+---------+------------+
+5 rows in set (0.00 sec)
+```
+
+並び替えは文字列でもできる。
+
+```
+mysql> select * from students order by name;
++----+---------+------------+
+| id | name    | birth      |
++----+---------+------------+
+|  1 | akashi  | 2004-08-22 |
+|  4 | enokida | 2005-10-18 |
+|  2 | iwaki   | 2005-11-04 |
+|  5 | okita   | 2006-03-03 |
+|  3 | ueno    | 2006-04-16 |
++----+---------+------------+
+5 rows in set (0.01 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
+
 [Qiita | データベースオブジェクトの命名規約](https://qiita.com/genzouw/items/35022fa96c120e67c637)
