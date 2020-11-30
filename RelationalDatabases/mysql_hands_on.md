@@ -848,6 +848,22 @@ mysql> select max(article) as articleNamber from shop;
 1 row in set (0.00 sec)
 ```
 
+## 特定の列の最大値を保持する行
+
+最大値のフィールドだけでなく、特定のカラムで最大値をもつフィールドを含んだレコードを取得したい時には`MAX`コマンドをサブクエリで実行すれば良い。
+
+例として、price カラムで最大値を持つフィールドを含んだレコードを取得する。
+
+```
+mysql> select * from shop where price=(select max(price) from shop);
++---------+--------+-------+
+| article | dealer | price |
++---------+--------+-------+
+|       4 | D      | 19.95 |
++---------+--------+-------+
+1 row in set (0.00 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
