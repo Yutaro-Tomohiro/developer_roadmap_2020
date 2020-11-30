@@ -772,6 +772,82 @@ mysql> select name, team_name from students inner join teams on students.team_id
 | SHOW TABLES           | 現在選択されているデータベースのテーブルを一覧する       |
 | DESCRIBE [テーブル名] | テーブルの構造を確認する                                 |
 
+## 列の最大値
+
+例に用いるために`shopテーブル`を新しく作成する。
+
+```
+mysql> CREATE TABLE shop (
+    ->     article INT UNSIGNED  DEFAULT '0000' NOT NULL,
+    ->     dealer  CHAR(20)      DEFAULT ''     NOT NULL,
+    ->     price   DECIMAL(16,2) DEFAULT '0.00' NOT NULL,
+    ->     PRIMARY KEY(article, dealer));
+Query OK, 0 rows affected (0.02 sec)
+```
+
+テーブル構造は以下のようになっている。
+
+```
+mysql> describe shop;
++---------+---------------+------+-----+---------+-------+
+| Field   | Type          | Null | Key | Default | Extra |
++---------+---------------+------+-----+---------+-------+
+| article | int unsigned  | NO   | PRI | 0       |       |
+| dealer  | char(20)      | NO   | PRI |         |       |
+| price   | decimal(16,2) | NO   |     | 0.00    |       |
++---------+---------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+```
+
+データを入れておく。
+
+```
+mysql> INSERT INTO shop VALUES
+    ->     (1,'A',3.45),(1,'B',3.99),(2,'A',10.99),(3,'B',1.45),
+    ->     (3,'C',1.69),(3,'D',1.25),(4,'D',19.95);
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+```
+
+データの確認
+
+```
+mysql> SELECT * FROM shop ORDER BY article;
++---------+--------+-------+
+| article | dealer | price |
++---------+--------+-------+
+|       1 | A      |  3.45 |
+|       1 | B      |  3.99 |
+|       2 | A      | 10.99 |
+|       3 | B      |  1.45 |
+|       3 | C      |  1.69 |
+|       3 | D      |  1.25 |
+|       4 | D      | 19.95 |
++---------+--------+-------+
+7 rows in set (0.00 sec)
+```
+
+カラムの最大値を取得する。
+最大値を取得するには`MAX`コマンドを使えば良い。
+
+使い方は以下のような感じ。
+
+```
+SELECT MAX([カラム名]) AS [表示するときのカラム名] FROM [テーブル名];
+```
+
+例として、`article`の最大値を取得する。
+
+```
+mysql> select max(article) as articleNamber from shop;
++---------------+
+| articleNamber |
++---------------+
+|             4 |
++---------------+
+1 row in set (0.00 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
