@@ -864,6 +864,25 @@ mysql> select * from shop where price=(select max(price) from shop);
 1 row in set (0.00 sec)
 ```
 
+## グループあたりの最大列数
+
+グループあたりの最大値だけを抜き出して列挙する時には、`MAX`コマンドと`GROUP BY`コマンドを組み合わせて使う。
+
+例として article ごとの price の最大値を見つけてみる。
+
+```
+mysql> select article, max(price) as price from shop group by article order by article;
++---------+-------+
+| article | price |
++---------+-------+
+|       1 |  3.99 |
+|       2 | 10.99 |
+|       3 |  1.69 |
+|       4 | 19.95 |
++---------+-------+
+4 rows in set (0.00 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
