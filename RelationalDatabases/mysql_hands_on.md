@@ -916,6 +916,25 @@ mysql> select * from shop where price=@min_price or price=@max_price;
 2 rows in set (0.00 sec)
 ```
 
+## 外部キーの使用
+
+## 2 つのキーで検索
+
+2 つのキーを用いた検索は`AND`や`OR`を使って表現することができるが`UNION`を使って別々の`SELECT`を組み合わせることができる。
+
+```
+mysql> select id, name from students where id=1
+    -> union
+    -> select id, name from students where name='ueno';
++----+--------+
+| id | name   |
++----+--------+
+|  1 | akashi |
+|  3 | ueno   |
++----+--------+
+2 rows in set (0.01 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
