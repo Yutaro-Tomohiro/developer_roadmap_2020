@@ -883,6 +883,39 @@ mysql> select article, max(price) as price from shop group by article order by a
 4 rows in set (0.00 sec)
 ```
 
+## 特定のカラムのグループごとの最大値が格納されている行
+
+## ユーザー定義変数の使用
+
+MySQL ユーザー変数を使用すると、クライアントの一時変数に結果を保存しなくても結果を記憶することができる。
+
+例えば price が最大値と最小値の article を見つけてくる。
+
+まずはユーザー定義変数に price の最大値と最小値を定義する。
+
+```
+mysql> select @min_price:=min(price), @max_price:=max(price) from shop;
++------------------------+------------------------+
+| @min_price:=min(price) | @max_price:=max(price) |
++------------------------+------------------------+
+|                   1.25 |                  19.95 |
++------------------------+------------------------+
+1 row in set, 2 warnings (0.00 sec)
+```
+
+次に上で定義したユーザー定義変数を使って、price が最大値と最小値の article を見つけてくる。
+
+```
+mysql> select * from shop where price=@min_price or price=@max_price;
++---------+--------+-------+
+| article | dealer | price |
++---------+--------+-------+
+|       3 | D      |  1.25 |
+|       4 | D      | 19.95 |
++---------+--------+-------+
+2 rows in set (0.00 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
