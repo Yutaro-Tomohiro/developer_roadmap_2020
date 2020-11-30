@@ -557,6 +557,210 @@ mysql> select date_format(birth, "%Y"), count(date_format(birth, "%Y")) from stu
 3 rows in set (0.00 sec)
 ```
 
+## 複数のテーブルの使用
+
+2 つのテーブルの両方からデータを取得するときは内部結合を使う。
+内部結合とは 2 つのテーブルでそれぞれ結合の対象となるカラムを指定し、それぞれのカラムに同じ値が格納されているデータを結合して取得するもののこと。
+
+今回は例として
+
+- teams テーブルを新たに作成
+- students テーブルに部活 ID を持たせる
+- teams テーブルと students テーブルを結合させる
+
+の 3 つをやってみる。
+
+まずは、teams テーブルを新たに作成する。
+持たせるデータ型は以下のようにする。
+
+- id SMALLINT UNIQUE NOT NULL,
+- team_name VARCHAR(20)
+
+```
+mysql> CREATE TABLE teams (id SMALLINT UNIQUE NOT NULL, team_name VARCHAR(20));
+Query OK, 0 rows affected (0.01 sec)
+```
+
+テーブル構造を確認する。
+
+```
+mysql> DESCRIBE teams;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| id        | smallint    | NO   | PRI | NULL    |       |
+| team_name | varchar(20) | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+```
+
+次に teams テーブルにデータを登録する。
+持たせるデータは以下にする。
+
+- id = 1, team_name = 'baseball team'
+- id = 2, team_name = 'basketball team'
+- id = 3, team_name = 'tennis team'
+
+```
+mysql> insert into teams value(1, 'baseball_team');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into teams value(2, 'basketball team');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> insert into teams value(3, 'tennis team');
+Query OK, 1 row affected (0.01 sec)
+```
+
+データが正しく登録されているか確認する。
+
+```
+mysql> select * from teams;
++----+-----------------+
+| id | team_name       |
++----+-----------------+
+|  1 | baseball team   |
+|  2 | basketball team |
+|  3 | tennis team     |
++----+-----------------+
+3 rows in set (0.00 sec)
+```
+
+次に students テーブルに部活 ID を持たせる。
+今の students テーブルには部活 ID に相当するものがないので、新たに`team_id`カラムを追加する。
+
+テーブルにカラムを追加するために`ALTER TABLE ~ ADD`コマンドを使う。
+
+```
+ALTER TABLE [テーブル名] ADD [新規カラム名] [型情報] [オプション];
+```
+
+```
+mysql> ALTER TABLE students ADD team_id SMALLINT;
+Query OK, 0 rows affected (0.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+```
+
+テーブル構造の確認。
+
+```
+mysql> describe students;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| id      | smallint    | NO   | PRI | NULL    |       |
+| name    | varchar(20) | YES  |     | NULL    |       |
+| birth   | date        | YES  |     | NULL    |       |
+| team_id | smallint    | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+```
+
+上手くいっているっぽいので、後は適当に team_id の情報を追加する。
+
+テーブルの中身を確認。
+
+```
+mysql> select * from students;
++----+---------+------------+---------+
+| id | name    | birth      | team_id |
++----+---------+------------+---------+
+|  1 | akashi  | 2004-08-22 |       1 |
+|  2 | iwaki   | 2005-11-04 |       2 |
+|  3 | ueno    | 2006-04-16 |       3 |
+|  4 | enokida | 2005-10-18 |       1 |
+|  5 | okita   | 2006-03-03 |       2 |
++----+---------+------------+---------+
+5 rows in set (0.00 sec)
+```
+
+いよいよ内部結合をする。
+
+2 つのテーブルを内部結合させてデータを取得するには`SELECT文`と`INNER JOIN句`を組み合わせて使えば良い。
+
+```
+SELECT table_name.col_name1 [, table_name.col_name2 ...]
+FROM table_name1
+INNER JOIN tbl_name2
+ON table_name1.col_name1 = table_name2.col_name2;
+```
+
+`SELECT`以下は見たいデータのカラムを指定する。
+全部見たい時は`*`を記述すれば良い。
+
+`FROM`以下には結合元のテーブル名を指定する。
+
+`INNER JOIN`以下には結合先のテーブル名を指定する。
+
+どのように結合するのかは`ON`の後に記述する。
+結合の対象となるカラムについて`テーブル名1.カラム名1 = テーブル名2.カラム名2`の形式で指定する。
+
+```
+mysql> select * from students inner join teams on students.team_id = teams.id;
++----+---------+------------+---------+----+-----------------+
+| id | name    | birth      | team_id | id | team_name       |
++----+---------+------------+---------+----+-----------------+
+|  1 | akashi  | 2004-08-22 |       1 |  1 | baseball team   |
+|  2 | iwaki   | 2005-11-04 |       2 |  2 | basketball team |
+|  3 | ueno    | 2006-04-16 |       3 |  3 | tennis team     |
+|  4 | enokida | 2005-10-18 |       1 |  1 | baseball team   |
+|  5 | okita   | 2006-03-03 |       2 |  2 | basketball team |
++----+---------+------------+---------+----+-----------------+
+5 rows in set (0.00 sec)
+```
+
+上記のコマンドより、from で指定したテーブルが左側に、inner join で指定したテーブルが右側にきていることが分かる。
+
+この結合は「students テーブルに対して、teams テーブルを結合した」と言う。
+
+今度は逆に「teams テーブルに対して、students テーブルを結合」してみる。
+
+```
+mysql> select * from teams inner join students on teams.id = students.team_id;
++----+-----------------+----+---------+------------+---------+
+| id | team_name       | id | name    | birth      | team_id |
++----+-----------------+----+---------+------------+---------+
+|  1 | baseball team   |  1 | akashi  | 2004-08-22 |       1 |
+|  2 | basketball team |  2 | iwaki   | 2005-11-04 |       2 |
+|  3 | tennis team     |  3 | ueno    | 2006-04-16 |       3 |
+|  1 | baseball team   |  4 | enokida | 2005-10-18 |       1 |
+|  2 | basketball team |  5 | okita   | 2006-03-03 |       2 |
++----+-----------------+----+---------+------------+---------+
+5 rows in set (0.00 sec)
+```
+
+今は id カラムが２個出ていたりしてデータが見にくい状態になっている。
+どの生徒がなんの部活に所属しているかだけ見たい時には、
+
+- name カラム
+- team_name カラム
+
+だけ指定すれば良い。
+
+複数テーブルを結合した状態でカラムを指定するときは`SELECT`以下に次のようにすることで指定できる。
+
+```
+[テーブル名].[カラム名]
+```
+
+ただし、複数テーブルを結合した状態でもカラム名が一意に分かる場合は`[テーブル名].`は省略できる。
+
+と言うことで`name`カラムと`team_name`カラムを指定してデータを取得してみる。
+
+```
+mysql> select name, team_name from students inner join teams on students.team_id = teams.id;
++---------+-----------------+
+| name    | team_name       |
++---------+-----------------+
+| akashi  | baseball team   |
+| iwaki   | basketball team |
+| ueno    | tennis team     |
+| enokida | baseball team   |
+| okita   | basketball team |
++---------+-----------------+
+5 rows in set (0.00 sec)
+```
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
