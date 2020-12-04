@@ -935,6 +935,10 @@ mysql> select id, name from students where id=1
 2 rows in set (0.01 sec)
 ```
 
+## 1 日あたりの訪問数の計算
+
+## AUTO_INCREMENT の使用
+
 ## 補足
 
 データベースオブジェクトの命名規則として、以下を参考にした。
