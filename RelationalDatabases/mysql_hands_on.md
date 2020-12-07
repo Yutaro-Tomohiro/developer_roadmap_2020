@@ -883,7 +883,7 @@ mysql> select article, max(price) as price from shop group by article order by a
 4 rows in set (0.00 sec)
 ```
 
-## 特定のカラムのグループごとの最大値が格納されている行
+<!-- ## 特定のカラムのグループごとの最大値が格納されている行 -->
 
 ## ユーザー定義変数の使用
 
@@ -935,9 +935,18 @@ mysql> select id, name from students where id=1
 2 rows in set (0.01 sec)
 ```
 
-## 1 日あたりの訪問数の計算
+<!-- ## 1 日あたりの訪問数の計算 -->
 
 ## AUTO_INCREMENT の使用
+
+`AUTO_INCREMENT`を設定すると、 NULL または 0 を格納した場合、現在カラムに格納されている最大の値に 1 を加算した値を自動で格納する。
+ちなみに任意の値を格納することもできる。
+
+使い方は以下の通り。
+
+```
+create table [テーブル名]([カラム名] [データ型] AUTO_INCREMENT, ...);
+```
 
 ## 補足
 
