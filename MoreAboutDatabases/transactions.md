@@ -17,10 +17,36 @@
 
 こうすることで、どちらがか失敗しても、1 つの処理として失敗したことになり、処理をしていない状態に戻すことができる。
 
+処理をしていない状態に戻す処理のことを**ロールバック**という。
+
 トランザクションはこのような特性から、結果の整合性が要求される処理に適した技法である。
 
 ## SQL におけるトランザクションの実装方法
 
+とりあえず構文を下に示す。
+
+```
+START TRANSACTION;
+
+一連の処理
+
+COMMIT;
+(もしくはROLLBACK)
+
+```
+
+MySQL でトランザクションを実装するには`START TRANSACTION`と`COMMIT`もしくは`ROLLBACK`で処理を挟めば良い。
+
+`START TRANSACTION`を使うことで自動コミットが無効になる。
+
+Auto Increment を指定しているレコードに対してロールバックを行った場合、数値の加算だけは実行されるので注意。
+
 ## FW におけるトランザクションの実装方法
 
-## ロールバック
+## 参考文献
+
+MySQL | START TRANSACTION, COMMIT, and ROLLBACK Statements(最終閲覧日：2020 年 12 月 7 日）
+https://dev.mysql.com/doc/refman/8.0/en/commit.html
+
+Qiita | データベースさわったこと無い新人向けトランザクション入門(最終閲覧日：2020 年 12 月 7 日）
+https://qiita.com/komattio/items/838ea5df68eb076e8099
