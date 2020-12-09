@@ -106,9 +106,39 @@ MySQL では値をデータファイルに書き込む前に二重書き込み�
 
 他のトランザクションによって、参照、変更されているデータをトランザクションが参照したり、変更したりすることを防止するシステム。
 
-##
+## MySQL で永続性を実現させる機能
 
-##
+- innodb_doublewrite 構成オプションでオンとオフが切り替え
+- 二重書き込みバッファー
+- innodb_flush_log_at_trx_commit 構成オプション
+- sync_binlog 構成オプション
+- innodb_file_per_table 構成オプション
+- ストレージデバイス内の書き込みバッファー (ディスクドライブ、SSD、RAID アレイなど)
+- ストレージデバイス内のバッテリーでバックアップされるキャッシュ
+- MySQL を実行する際に使用されるオペレーティングシステム (特に、fsync() システムコールでのサポート)
+- MySQL サーバーを実行し、MySQL データを格納するすべてのコンピュータサーバーおよびストレージデバイスへの電力を保護する無停電電源装置 (UPS)
+- バックアップ方針 (頻度、バックアップのタイプ、バックアップの保存期間など)
+- 分散型またはホスト型のデータアプリケーションの場合、MySQL サーバー用のハードウェアが配置されているデータセンター、およびデータセンター間のネットワーク接続の特定の特性
+
+## innodb_doublewrite について
+
+- この変数を有効にすると、すべてのデータが二重書き込みバッファー、実際のデータファイルの順に格納される
+- デフォルトでは有効
+- --skip-innodb_doublewrite を使用すれば無効できる
+- https://dev.mysql.com/doc/refman/5.6/ja/innodb-parameters.html#sysvar_innodb_doublewrite
+
+## sync_binlog について
+
+- 変数の値が 0 より大きい場合は sync_binlog コミットグループがバイナリログに書き込まれた後に、バイナリログをディスクに同期する
+- デフォルト値は 0
+- https://dev.mysql.com/doc/refman/5.6/ja/replication-options-binary-log.html
+
+## innodb_file_per_table について
+
+- 有効になっている場合は新たに作成された各テーブルのデータおよびインデックスがシステムテーブルスペースではなく、個別の .ibd ファイルに格納される
+- 5.6.6 以上のデフォルト
+- innodb_file_per_table を無効にすると、すべてのテーブルおよびインデックス用のデータが、システムテーブルスペースを構成する ibdata ファイルに格納される
+- https://dev.mysql.com/doc/refman/5.6/ja/innodb-parameters.html#sysvar_innodb_file_per_table
 
 ## 参考文献
 
