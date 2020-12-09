@@ -153,3 +153,6 @@ https://qiita.com/song_ss/items/38e514b05e9dabae3bdb
 
 CUBE SUGAR CONTAINER | MySQL の InnoDB でトランザクション分離レベルの違いを試す(最終閲覧日：2020 年 12 月 7 日）
 https://blog.amedama.jp/entry/mysql-innodb-tx-iso-levels
+
+FAT47 の底辺インフラ議事録 | MySQL でトランザクションの 4 つの分離レベルを試す(最終閲覧日：2020 年 12 月 7 日）
+https://kikai.hatenablog.jp/entry/20140212/1392171784
