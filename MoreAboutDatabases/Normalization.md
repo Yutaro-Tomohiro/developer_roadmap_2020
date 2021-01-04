@@ -88,4 +88,23 @@
 
 ## 第 2 正規形
 
+第２正規形は、第１正規形のテーブルから部分関数従属しているカラムを切り出したものになる。
+
+なので、下のテーブルから「伝票番号」と「商品コード」に部分関数従属しているカラムをそれぞれ別のテーブルとして分離させる。
+![normalization5](../Images/normalization5.png)
+
+分離させると以下のようになる。
+
+受注明細テーブル
+
+![normalization6](../Images/normalization6.png)
+
+受注テーブル
+
+![normalization7](../Images/normalization7.png)
+
+商品テーブル
+
+![normalization8](../Images/normalization8.png)
+
 ## 第 3 正規形
