@@ -1,0 +1,364 @@
+openapi: 3.0.0
+info:
+  title: simple blog app
+  version: 0.0.1
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      summary: ユーザ一覧取得
+      description: ユーザーの一覧を取得します。
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    post:
+      tags:
+        - Users
+      summary: ユーザー新規登録
+      description: 新規のユーザを作成します。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: 特定のユーザー取得
+      description: 特定のユーザーを取得します。
+      parameters:
+        - name: id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    put:
+      tags:
+        - Users
+      summary: ユーザー更新
+      description: 特定のユーザーを更新します。
+      parameters:
+        - name: id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: ジョン卍郎
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    delete:
+      tags:
+        - Users
+      summary: ユーザー削除
+      description: 特定のユーザーを削除します。
+      parameters:
+        - name: id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+  /users/{user_id}/posts/:
+    get:
+      tags:
+        - Posts
+      summary: 投稿一覧取得
+      description: 特定のユーザーの投稿を一覧取得します。
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      example: 初めての投稿
+                    text:
+                      type: string
+                      example: 初めまして。これからよろしくお願いします。
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    post:
+      tags:
+        - Posts
+      summary: 新規投稿
+      description: 特定のユーザの新規投稿を作成します。
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - text
+              properties:
+                title:
+                  type: string
+                  example: 投稿タイトル
+                text:
+                  type: string
+                  example: 投稿の内容
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "409":
+          description: Conflict
+  /users/{user_id}/posts/{id}:
+    get:
+      tags:
+        - Posts
+      summary: 特定の投稿取得
+      description: 特定のユーザーの投稿をidを指定して取得します。
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          description: 投稿ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    example: 投稿タイトル
+                  text:
+                    type: string
+                    example: 投稿の内容
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    put:
+      tags:
+        - Posts
+      summary: 投稿更新
+      description: 特定のユーザーの投稿をidを指定して更新します。
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          description: 投稿ID
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - text
+              properties:
+                title:
+                  type: string
+                  example: 投稿タイトル
+                text:
+                  type: string
+                  example: 投稿の内容
+      responses:
+        "204":
+          description: "No Content"
+        "400":
+          description: "Bad Request"
+        "404":
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
+    delete:
+      tags:
+        - Posts
+      summary: 投稿削除
+      description: 特定のユーザーの投稿をidを指定して削除します。
+      parameters:
+        - name: user_id
+          in: path
+          description: ユーザーID
+          required: true
+          schema:
+            type: integer
+        - name: id
+          in: path
+          description: 投稿ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Not Found
