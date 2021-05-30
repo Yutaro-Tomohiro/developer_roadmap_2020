@@ -292,7 +292,7 @@ prepend メソッドは include と違い、モジュールをインクルード
 ```
 module M2
   def hoge_method
-    'M#hoge_method()'
+    'M2#hoge_method()'
   end
 end
 
@@ -305,3 +305,104 @@ class D2 < C2; end
 D2.ancestors
 # => [D2, M2, C2, Object, Kernel, BasicObject]
 ```
+
+#### Kernel
+
+Kernel は Object クラスでインクルードされている。
+
+RUby のオブジェクトは常にオブジェクトの中で実行されるので、Kernel モジュールのメソッドはどこからでも呼び出せる。
+
+### メソッドの実行
+
+以下のようなメソッドがあるとする。
+
+```
+def hoge_method
+  temp = @x+1
+  huga_method(temp)
+end
+```
+
+このメソッドを実行するには
+
+- インスタンス変数 @x が属しているオブジェクトは何か
+- huga_method が呼び出されているオブジェクトは何か
+
+が分からないといけない。
+
+答えは、@x も huga_method もレシーバーに属している。
+
+#### self キーワード
+
+Ruby のコードはカレントオブジェクト self で実行される。
+
+self の動きについて以下の例で説明する。
+
+```
+class HogeClass
+  def testing_self
+    @var = 10
+    hoge_method
+    self
+  end
+
+  def hoge_method
+    @var += 1
+  end
+end
+
+object = HogeClass.new
+
+object.testing_self
+# => <HogeClass:0x00000000022b61f8 @var=11>
+```
+
+### Refinements
+
+オープンクラスでクラス修正すると変更がグローバルに及んでしまう問題があった。
+
+Ruby2.0 からこの問題に対処できる Refinements が実装された。
+
+Refinements を呼び出すには using メソッドを使って明示的に有効にする必要がある。
+
+※ Ruby2.1 から using がモジュール定義の中でも呼び出せるようになった。
+
+```
+module StringExtensions
+  refine String do
+    def reverse
+      "esrever"
+    end
+  end
+end
+
+module StringStuff
+  using StringExtensions
+  "my_string".reverse # => "esrrver"
+end
+
+"my_string".reverse # => "gnirts_ym"
+```
+
+Refinements が有効になるのは以下の 2 パターン
+
+- refine ブロックそのもの
+- using を呼び出した場所からモジュールの終わりまで、またはファイルの終わりまで
+
+## まとめ
+
+- オブジェクトはインスタンス変数とクラスへのリンクで構成されている
+- オブジェクトのメソッドはオブジェクトのクラスの生き物
+- クラスは Class クラスのオブジェクトで、クラス名は単なる定数
+- Class は Module のサブクラスでモジュールは基本的にはメソッドをまとめたもの
+- 定数はファイルツリーのように配置されている
+- クラスはそれぞれ BasicObject まで続く継承チェーンを持っている
+- メソッドを呼び出すと、Ruby はレシーバーのクラスに向かって一歩右に進み、それから継承チェーンを上へ向かって進む
+- クラスにモジュールをインクルードするとそのクラスの継承チェーンの真上にモジュールが挿入される
+- モジュールをプリペンドするとそのクラスの継承チェーンの真下に挿入される
+- メソッドを呼び出すときはレシーバーが self になる
+- モジュールを定義する時にはそのモジュールが self になる
+- インスタンス変数は常に self のインスタンス変数とみなされる
+- レシーバーを明示せずにメソッドを呼び出すと、self のメソッドだとみなされる
+- Refinements は副作用が出にくいオープンクラスのようなもの
+- ただし、まだ仕様が固まりきっていないため変な挙動をするときがある
