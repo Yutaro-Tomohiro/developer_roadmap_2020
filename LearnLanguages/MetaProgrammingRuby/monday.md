@@ -340,10 +340,17 @@ self の動きについて以下の例で説明する。
 
 ```
 class HogeClass
+  def self.class_method
+    p "class method"
+  end
+
+  p self # => HogeClass <- class直下のslefはclassを表している
+  class_method # => "class method"
+
   def testing_self
     @var = 10
-    hoge_method
-    self
+    hoge_method # self.hoge_methodと一緒
+    self # インスタンスメソッド内のselfはレシーバーを表している
   end
 
   def hoge_method
@@ -353,7 +360,7 @@ end
 
 object = HogeClass.new
 
-object.testing_self
+p object.testing_self
 # => <HogeClass:0x00000000022b61f8 @var=11>
 ```
 
