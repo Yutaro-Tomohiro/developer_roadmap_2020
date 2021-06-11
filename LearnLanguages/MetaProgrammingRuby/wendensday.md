@@ -100,3 +100,60 @@ object.instance_eval { p @v } # => 2
 ```
 
 テストを書くときにこのテクニックがたまに使われるらしい。
+
+## 呼び出し可能オブジェクト
+
+Ruby でコードを保管できるものは基本的に以下の３つ。
+
+- Proc の中
+- lambda の中
+- メソッドの中
+
+### Proc オブジェクト
+
+ブロックはオブジェクトではないため、保管しておいて後から実行というのができない。
+
+この問題を解決するために Proc クラスがある。
+
+```
+inc = Proc.new { |x| x + 1 }
+
+p inc.call(2) # => 3
+```
+
+Ruby ではブロックを Proc に変換する方法が上以外に lambda を使う方法がある。
+
+```
+# 通常の使い方
+dec = lambda { |x| x - 1 }
+p dec.class # => Proc
+p dec.call(2) # => 1
+
+# 矢印ラムダの使い方
+inc = ->(x) { x + 1 }
+p inc.call(2) # => 3
+```
+
+#### &修飾
+
+ブロックは普通はメソッドの中で使う場合は yield を使うが yield では足りないパターンがある。
+
+- 他のメソッドにブロックを渡したい時
+- ブロックを Proc に変換したい時
+
+上のような問題を解決したい時は&演算子を使うと、proc オブジェクトをブロック引数の代わりにメソッドに渡せる。
+
+```
+def math(a, b)
+  yield(a, b)
+end
+
+def do_math(a, b, &operation)
+  p operation.class # => Proc
+  p math(a, b, &operation)
+end
+
+do_math(2, 3) { |x, y| x + y } # => 5
+```
+
+ちなみにブロックは変数 operation が参照された時点で Proc オブジェクトに変換されている。
