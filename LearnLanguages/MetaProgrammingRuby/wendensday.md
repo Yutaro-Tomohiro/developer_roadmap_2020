@@ -8,7 +8,7 @@
 - モジュール定義
 - メソッド
 
-```
+```Ruby
 v1 = 1
 
 class HogeClass # スコープゲートclassの入り口
@@ -31,7 +31,7 @@ p local_variables # => [:v1, :object]
 
 以下のようなことをしたい場合はどうすればいいだろうか？
 
-```
+```Ruby
 var = '成功'
 
 class HogeClass
@@ -44,7 +44,7 @@ end
 
 以下のように`Class.new`と`Module#define_method`を使うと解決できる。
 
-```
+```Ruby
 var = '成功'
 
 HogeClass = Class.new do
@@ -61,7 +61,7 @@ HogeClass.new.hoge_method # => "成功"
 
 BasicObject#instance_eval はオブジェクトのコンテキストでブロックを評価する。
 
-```
+```Ruby
 class HogeClass
   def initialize
     @v = 1
@@ -84,7 +84,7 @@ end
 
 コンテキスト探査機を使うことでカプセル化を破壊することができる。
 
-```
+```Ruby
 class HogeClass
   def initialize
     @v = 1
@@ -123,7 +123,7 @@ p inc.call(2) # => 3
 
 Ruby ではブロックを Proc に変換する方法が上以外に lambda を使う方法がある。
 
-```
+```Ruby
 # 通常の使い方
 dec = lambda { |x| x - 1 }
 p dec.class # => Proc
@@ -143,7 +143,7 @@ p inc.call(2) # => 3
 
 上のような問題を解決したい時は&演算子を使うと、proc オブジェクトをブロック引数の代わりにメソッドに渡せる。
 
-```
+```Ruby
 def math(a, b)
   yield(a, b)
 end
@@ -157,3 +157,74 @@ do_math(2, 3) { |x, y| x + y } # => 5
 ```
 
 ちなみにブロックは変数 operation が参照された時点で Proc オブジェクトに変換されている。
+
+### Proc と lambda の違い
+
+#### return
+
+lambda の return は単に lambda から戻るだけ。
+
+```Ruby
+def double(callable_object)
+  callable_object.call*2
+end
+
+l = lambda { return 10 }
+p double(l) # => 20
+```
+
+Proc の場合、Proc から戻らずに Proc が定義されたスコープから戻る。
+
+```Ruby
+def double
+  p = Proc.new { return 10 }
+  result = p.call
+  result*2 # ここまで渡らない
+end
+
+p double # => 10
+```
+
+この挙動を知っていれば以下のようなバグは避けられる。
+
+```Ruby
+def double(callable_object)
+  callable_object.call*2
+end
+
+p = Proc.new { return 10 }
+p double(p) # =>
+```
+
+p はトップレベルでされているため、戻れないためプログラムは期待した動作をしない。
+
+明示的な return を使わなければこのようなミスは回避できる。
+
+```Ruby
+def double(callable_object)
+  callable_object.call*2
+end
+
+p = Proc.new { 10 }
+p double(p) # => 20
+```
+
+### Method オブジェクト
+
+ruby ではメソッドも呼び出し可能オブジェクトとして扱うことができる。
+
+```Ruby
+class HogeClass
+  def initialize(value)
+      @x = value
+  end
+
+  def hoge_method
+    p @x
+  end
+end
+
+object = HogeClass.new(1)
+m = object.method(:hoge_method)
+m.call # => 1
+```
