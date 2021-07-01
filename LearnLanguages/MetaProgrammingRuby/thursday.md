@@ -104,3 +104,99 @@ object2.instance_eval do
   p @v # => 2
 end
 ```
+
+## クラスインスタンス変数
+
+以下の例ではクラスのインスタンス変数とクラスのオブジェクトのインスタンス変数は別物であることを示している。
+
+```Ruby
+class MyClass
+  @v = 1
+  def self.read; p @v; end
+  def write; @v = 2; end
+  def read; p @v; end
+end
+
+obj = MyClass.new
+obj.read # => nil
+obj.write
+obj.read # => 2
+MyClass.read # => 1
+```
+
+上のコードでは 2 つの@v が異なるスコープで定義されている。
+
+クラスもオブジェクトであることと self がスコープによってどのような振る舞いをするのかを思い出すと理解しやすい。
+
+write メソッドで定義されている@v は obj が self となるため、obj のインスタンス変数である。
+
+MyClass 直下に定義されている@v は MyClass が self となるため、MyClass というオブジェクトのインスタンス変数となる。
+
+このようなインスタンス変数をクラスインスタンス変数と呼ぶ。
+
+## 特異メソッドの導入
+
+Ruby では特定のオブジェクトにメソッドを追加できる。
+
+```Ruby
+str = "jast a regular string"
+
+p str.methods.grep(/title?/) # => []
+
+def str.title?
+  self.upcase == self
+end
+
+p str.title? # => false
+
+p str.methods.grep(/title?/) # => [:title?]
+p 'aaa'.methods.grep(/title?/) # => []
+
+# singleton_methodsはそのオブジェクトに定義されている特異メソッドの一覧を返すメソッド
+p str.singleton_methods # => [:title?]
+```
+
+上記のコードは文字列 str に title?メソッドを追加している。
+String クラスの他のオブジェクトには影響がない。
+
+このように単一のオブジェクトに特化したメソッドを特異メソッドと呼ぶ。
+
+特異メソッドは上記の方法か、Object#define_singleton_method で定義できる。
+
+## クラスメソッドはクラスの特異メソッド
+
+いきなりの復習になるが、クラスは単なるオブジェクトであり、クラス名は単なる定数である。
+
+このことが分かれば、クラスメソッドの呼び出しと、インスタンスメソッドの呼び出しは同じものであることが分かる。
+
+```Ruby
+an_object.a_method
+AClass.a_class_method
+```
+
+1 行目は変数で参照したオブジェクトのメソッドを呼び出している。
+
+2 行目は定数で参照したオブジェクトのメソッドを呼び出している。
+
+ここで思い出したいのはクラスメソッドの定義の方法である。
+
+特異メソッドとクラスメソッドの定義の仕方を比較してみると、この 2 つは同じものであることが分かる。
+
+```
+def obj.a_singleton_method; end
+def MyClass.another_class_method; end
+```
+
+つまり、特異メソッドを def を使って定義する構文は常に以下のようになる。
+
+```Ruby
+def object.method
+  #  メソッドの中身
+end
+```
+
+上記の object の部分には以下の 3 つが使える。
+
+- オブジェクトの参照
+- クラス名の定数
+- self
