@@ -182,7 +182,7 @@ AClass.a_class_method
 
 特異メソッドとクラスメソッドの定義の仕方を比較してみると、この 2 つは同じものであることが分かる。
 
-```
+```Ruby
 def obj.a_singleton_method; end
 def MyClass.another_class_method; end
 ```
@@ -200,3 +200,67 @@ end
 - オブジェクトの参照
 - クラス名の定数
 - self
+
+## 特異クラス
+
+Ruby には普段見ているクラス以外に特異クラスと呼ばれる特別なクラスがある。
+
+特異クラスは普段は隠れていて見れないが、特異クラスのスコープに入れる特別な構文がある。
+
+```Ruby
+obj = String.new
+
+class << obj
+  p self # => #<Class:#<String:0x00000000013c6620>>
+end
+
+p 'abc'.singleton_class # => #<Class:#<String:0x0000000001c126d0>>
+```
+
+特異クラスの特徴は以下の通り。
+
+- Object#singleton_class か class << を使わないと見れない
+- インスタンスを一つしか持てない
+- 特異クラスはオブジェクトの特異メソッドが住んでいる場所
+
+## 特異クラスとメソッド探索
+
+特異クラスは画面に印字すると以下のように#がついて表示される。
+
+```Ruby
+obj = Object.new
+
+p obj.class # => Object
+p obj.singleton_class # => #<Class:#<Object:0x0000000002162748>>
+```
+
+これから先のルールとして、特異クラスを表すときは#のプレフィックスを使う。
+
+例えば#obj は obj の特異クラスといった感じ。
+
+以下に特異クラスとメソッド探索をするためのサンプルプログラムを示す。
+
+```Ruby
+class C
+  def a_method
+    p 'C#a_method()'
+  end
+end
+
+class D < C; end
+
+obj = D.new
+
+class << obj
+  def a_singleton_method
+    p 'obj#a_singleton_method()'
+  end
+end
+```
+
+上の例では特異クラス #obj を作成した。
+特異クラスもクラスであるため、スーパークラスがあるはずであるなので#obj のスーパークラスを見てみる。
+
+```Ruby
+p obj.singleton_class.superclass # => D
+```
