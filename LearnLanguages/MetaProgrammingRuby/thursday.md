@@ -264,3 +264,26 @@ end
 ```Ruby
 p obj.singleton_class.superclass # => D
 ```
+
+<!-- ```plantuml
+@startuml
+title 特異メソッドの探索
+namespace 特異メソッドの探索 {
+  class #obj {
+    + a_singleton_method()
+  }
+
+  class D {}
+
+
+  }
+}
+@enduml
+``` -->
+
+これらの情報を図にすると以下のようになる。
+
+![thursday1](../../Images/thursday1.png)
+
+特異メソッドも通常のメソッドのように探索することができることが分かった。
+オブジェクトが特異メソッドを持っていれば特異クラスから探索を始める。
