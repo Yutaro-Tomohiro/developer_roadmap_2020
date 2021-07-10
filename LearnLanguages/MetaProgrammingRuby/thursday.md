@@ -287,3 +287,45 @@ namespace 特異メソッドの探索 {
 
 特異メソッドも通常のメソッドのように探索することができることが分かった。
 オブジェクトが特異メソッドを持っていれば特異クラスから探索を始める。
+
+## 特異クラスと継承
+
+先程のプログラムの例の class C にクラスメソッドを追加する。
+
+```Ruby
+class C
+ class << self
+   def a_class_method
+     p 'C.a_class_method()'
+   end
+ end
+
+ def a_method
+   p 'C#a_method()'
+ end
+end
+```
+
+オブジェクトモデルを見ていく。
+
+```Ruby
+p C.singleton_class # => #<Class:C>
+p D.singleton_class # => #<Class:D>
+
+p C.singleton_class.superclass # => #<Class:Object>
+p D.singleton_class.superclass # => #<Class:C>
+```
+
+上のコードのように継承を遡っていくと以下の図のようになる。
+
+![thursday2](../../Images/thursday2.png)
+
+ぱっと見複雑だが、このようにオブジェクトモデルを配置することでサブクラスからクラスメソッドを呼び出すことができる。
+
+```Ruby
+D.a_class_method # => "C.a_class_method()"
+```
+
+このように a_class_method()が C で定義されていても、D から呼び出すことができる。
+
+これは#D のメソッド探索がスーパークラス#C に上がって、そこでメソッドを見つけたからである。
