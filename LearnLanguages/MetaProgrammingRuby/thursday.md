@@ -329,3 +329,247 @@ D.a_class_method # => "C.a_class_method()"
 このように a_class_method()が C で定義されていても、D から呼び出すことができる。
 
 これは#D のメソッド探索がスーパークラス#C に上がって、そこでメソッドを見つけたからである。
+
+クラスメソッドの構文
+
+おさらいになるが、クラスメソッドはクラスの特異メソッドのこと。
+
+定義方法は以下の 3 つ。
+
+```Ruby
+def MyClass.a_class_method; end
+
+class MyClass
+  def self.a_class_method; end
+end
+
+class MyClass
+  class << self
+    def a_class_method; end
+  end
+end
+```
+
+### クラスのアトリビュート
+
+特異クラスの使い方の例として、クラスのアトリビュートを定義したい時に使える。
+
+オブジェクトにアトリビュートを定義したい時、Ruby では以下のように書ける。
+
+```Ruby
+class MyClass
+  attr_accessor :a
+end
+
+obj = MyClass.new
+
+obj.a = 1
+p obj.a # => 1
+```
+
+MyClass にアトリビュートを追加するには以下のように特異クラスにアトリビュートを定義すれば良い。
+
+```Ruby
+class MyClass
+  class << self
+    attr_accessor :c
+  end
+end
+
+MyClass.c = 2
+p MyClass.c # => 2
+```
+
+これはつまり、以下のように書くことと同じになる。
+
+```Ruby
+class MyClass
+  def self.c=(v)
+    @c = v
+  end
+
+  def self.c
+    @c
+  end
+end
+```
+
+## モジュールの不具合
+
+モジュールをインクルードしてクラスメソッドを定義する場合、以下のように書いてもうまくいかない。
+
+```Ruby
+module MyModule
+  def self.my_method
+    p 'hello'
+  end
+end
+
+ class MyClass
+    include MyModule
+ end
+
+MyClass.my_method # => undefined method `my_method'...
+```
+
+これはクラスがモジュールをインクルードすると、モジュールのインスタンスメソッドが手に入るためである。
+
+クラスメソッドは手に入らない。
+
+なぜならクラスメソッドはモジュールの特異クラスの中にいるためである。
+
+解決策として、my_method を MyModule のインスタンスメソッドとして定義し、MyClass の特異クラスでモジュールをインクルードすれば良い。
+
+```Ruby
+module MyModule
+  def my_method
+    p 'hello'
+  end
+end
+
+ class MyClass
+  class << self
+    include MyModule
+  end
+ end
+
+ MyClass.my_method # => "hello"
+```
+
+my_method は MyClass の特異クラスのインスタンスメソッドである。
+つまり、my_method は MyClass のクラスメソッドである。
+
+この技法をクラス拡張と言う。
+
+この技法をオブジェクトに当てはめた場合、オブジェクト拡張と言う。
+
+```Ruby
+module MyModule
+  def my_method
+    p 'hello'
+  end
+end
+
+obj = Object.new
+
+class << obj
+  include MyModule
+end
+
+obj.my_method # => "hello"
+p obj.singleton_methods # => [:my_method]
+```
+
+### Object#extend
+
+Ruby は特異クラスをオープンせずに、クラスやオブジェクトを拡張するためのメソッドを提供している。
+
+Object#extend というメソッドである。
+
+Object#extend はレシーバの特異クラスにモジュールをインクルードするためのショートカットである。
+
+```Ruby
+module MyModule
+  def my_method
+    p 'hello'
+  end
+end
+
+obj = Object.new
+obj.extend MyModule
+obj.my_method # => "hello"
+
+
+ class MyClass
+    extend MyModule
+ end
+
+ MyClass.my_method # => "hello"
+```
+
+## アラウンドエイリアス
+
+Module#alias_method を使うと Ruby のメソッドにエイリアスをつけれる。
+
+```Ruby
+class MyClass
+  def my_method
+    p 'my_method()'
+  end
+  alias_method :m, :my_method
+end
+
+obj = MyClass.new
+obj.my_method # => "my_method()"
+obj.m # => "my_method()"
+```
+
+メソッドにエイリアスをつけて再定義すると、メソッドの再定義の仕組みがよく分かる。
+
+```Ruby
+class String
+  alias_method :real_length, :length
+
+  def length
+    real_length > 5 ? 'long' : 'short'
+  end
+end
+
+p 'War and Peace'.length # => "long"
+p 'War and Peace'.real_length # => 13
+```
+
+上の例では String#length を再定義しているが、エイリアスは元のメソッドを参照している。
+
+このことからメソッドの再定義は元のメソッドを変更するのではなく、新しいメソッドを定義して元のメソッド名をつけることだと分かる。
+
+このような仕様のため、メソッドを再定義しても元のメソッドをエイリアスで呼び出すことができる。
+
+また、このコードは新しい length が古い length の周囲(アラウンド)をラップしている。
+このような書き方をアラウンドエイリアスと呼ぶ。
+
+アラウンドエイリアスは一種のモンキーパッチなので既存のコードを破壊しかねない問題がある。
+
+Ruby2.0 からは既存のメソッドの周囲に機能を追加する方法が 2 つ導入されているので、それらを紹介する。
+
+### Refinements ラッパー
+
+リファインしたメソッドから super を呼び出すと、元のリファインしていないメソッドが呼び出せる。
+
+この特徴からアラウンドエイリアスの代わりに使える。
+
+```Ruby
+module StringRefinements
+  refine String do
+    def length
+      super > 5 ? 'long' : 'short'
+    end
+  end
+end
+
+p 'War and Peace'.length # => 13
+
+using StringRefinements
+p 'War and Peace'.length # => "long"
+```
+
+Refinements ラッパーが適用されるのは using で呼ばれてからファイルの最後まで(Ruby2.1 からはモジュール定義の終わりまで)なので、あらゆるところに適用されるアラウンドエイリアスよりも安全である。
+
+### Prepend ラッパー
+
+Module#prepend はプリペンドしたモジュールがインクルーダーのメソッドをオーバーライドできる。
+そして、元のメソッドは super で呼び出せる。
+
+```Ruby
+module ExplicitString
+  def length
+    super > 5 ? 'long' : 'short'
+  end
+end
+
+String.class_eval do
+  prepend ExplicitString
+end
+
+p 'War and Peace'.length # => "long"
+```
